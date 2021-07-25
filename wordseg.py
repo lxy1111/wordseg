@@ -91,8 +91,17 @@ class HMM(object):
         V = [{}]
         path = {}
         for y in states:
-            V[0][y] = start_p[y] * emit_p[y].get(text[0],0)
+            zeroneverseen = text[0] not in emit_p['S'].keys() and \
+                text[0] not in emit_p['M'].keys() and \
+                text[0] not in emit_p['E'].keys() and \
+                text[0] not in emit_p['B'].keys()
+
+            emitp = emit_p[y].get(text[0],0) if not zeroneverseen else 1.0
+
+            V[0][y] = start_p[y] * emitp
             path[y]=[y]
+
+
         for t in range(1,len(text)):
             V.append({})
             newpath = {}
